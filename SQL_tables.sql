@@ -1,5 +1,6 @@
 -- DROP TABLE schools;
 CREATE TABLE "schools" (
+	"id" SERIAL PRIMARY KEY,
     "RCDTS" BIGINT NOT NULL,
     "School Name"  VARCHAR(200),
     "School Type" VARCHAR(200),
@@ -24,6 +25,7 @@ SELECT * from schools;
 
 -- DROP TABLE homevalues;
 CREATE TABLE "homevalues" (
+	"id" SERIAL PRIMARY KEY,
     "RegionID" INT NOT NULL,
     "SizeRank" INT NOT NULL,
     "Zip" INT NOT NULL,
@@ -49,6 +51,7 @@ SELECT * from homevalues;
 
 -- DROP TABLE schools_homevalues;
 CREATE TABLE "schools_homevalues" (
+	"id" SERIAL PRIMARY KEY,
     "RCDTS" BIGINT NOT NULL,
     "School Name"  VARCHAR(200),
     "School Type" VARCHAR(200),
