@@ -50,30 +50,29 @@ CREATE TABLE "homevalues" (
 SELECT * from homevalues;
 
 -- DROP TABLE schools_homevalues;
-CREATE TABLE "schools_homevalues" (
+CREATE TABLE "schools_homevalues" (	
 	"id" SERIAL PRIMARY KEY,
     "RCDTS" BIGINT NOT NULL,
-    "School Name"  VARCHAR(200),
-    "School Type" VARCHAR(200),
+    "School_Name"  VARCHAR(200),
+    "School_Type" VARCHAR(200),
     "County" VARCHAR(100),
-    "# Student Enrollment" FLOAT,
-    "Perc Student Enrollment - Low Income" FLOAT,
-    "Student Attendance Rate" FLOAT,
-    "$ Site-level PEr-Pupil Expenditures - Subtotal" FLOAT,
-    "$ District Centralized Per-Pupil Expenditure - Subtotal" FLOAT,
-    "$ Total Per-Pupil Expenditures - Subtotal" FLOAT,
-    "SAT Reading Average" FLOAT,
-    "SAT Math Average" FLOAT,
+    "#_Student_Enrollment" FLOAT,
+    "Perc_Student_Enrollment_Low_Income" FLOAT,
+    "Student_Attendance_Rate" FLOAT,
+    "$_Site_level_Per_Pupil_Expenditures_Subtotal" FLOAT,
+    "$_District_Centralized_Per_Pupil_Expenditure_Subtotal" FLOAT,
+    "$_Total_Per_Pupil_Expenditures_Subtotal" FLOAT,
+    "SAT_Reading_Average" FLOAT,
+    "SAT_Math_Average" FLOAT,
     "Address" VARCHAR(300),
     "City" VARCHAR(100),
-    "CountyName" VARCHAR(100),
-    "RecType" VARCHAR(100),
+    "County_Name" VARCHAR(100),
+    "Rec_Type" VARCHAR(100),
     "Zip" INT,
     "Lat" FLOAT,
     "Lng" FLOAT,
-    "AvgHomeValue" INT NOT NULL
+    "Avg_Home_Value" INT NOT NULL
 );
-
 SELECT * from schools_homevalues;
 
 
