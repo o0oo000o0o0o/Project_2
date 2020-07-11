@@ -17,7 +17,7 @@ Base.prepare(engine, reflect=True)
 
 # Save references to each table
 home_values = Base.classes.homevalues
-schools = Base.classes.schools
+# schools = Base.classes.schools
 merged= Base.classes.schools_homevalues
 
 #Flask setup
