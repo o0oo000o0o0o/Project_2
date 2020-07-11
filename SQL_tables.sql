@@ -50,18 +50,18 @@ CREATE TABLE "homevalues" (
 SELECT * from homevalues;
 
 -- DROP TABLE schools_homevalues;
-CREATE TABLE "schools_homevalues" (	
+CREATE TABLE "schools_homevalues" (
 	"id" SERIAL PRIMARY KEY,
     "RCDTS" BIGINT NOT NULL,
     "School_Name"  VARCHAR(200),
     "School_Type" VARCHAR(200),
     "County" VARCHAR(100),
-    "#_Student_Enrollment" FLOAT,
+    "N_Student_Enrollment" FLOAT,
     "Perc_Student_Enrollment_Low_Income" FLOAT,
     "Student_Attendance_Rate" FLOAT,
-    "$_Site_level_Per_Pupil_Expenditures_Subtotal" FLOAT,
-    "$_District_Centralized_Per_Pupil_Expenditure_Subtotal" FLOAT,
-    "$_Total_Per_Pupil_Expenditures_Subtotal" FLOAT,
+    "Site_level_Per_Pupil_Expenditures_Subtotal" FLOAT,
+    "District_Centralized_Per_Pupil_Expenditure_Subtotal" FLOAT,
+    "Total_Per_Pupil_Expenditures_Subtotal" FLOAT,
     "SAT_Reading_Average" FLOAT,
     "SAT_Math_Average" FLOAT,
     "Address" VARCHAR(300),
