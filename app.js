@@ -99,14 +99,27 @@ d3.json(queryUrl).then(function(data) {
   function metadata(choice) {
     var satscores= data
     // remove all info in demographic panel if exists
-    d3.selectAll(".card-body > p").remove()
-    // filter metadata according to chosen id
-    var filteredsatscores= satscores.filter(d => d.School_Name === choice)[0]
-    // get key-value pairs and add them to the demographic info panel
-    Object.entries(filteredsatscores).forEach(function([key, value]) {
-        d3.selectAll(".card-body").append("p").html("<strong>" + key + ": " + "</strong>" + value);
-    });
-  }
+  d3.selectAll(".card-body > p").remove()
+  //   // filter metadata according to chosen id
+  var filteredsatscores= satscores.filter(d => d.School_Name === choice)[0]
+  //   // get key-value pairs and add them to the demographic info panel
+  // Object.entries(filteredsatscores).forEach(function([key, value]) {
+  //       d3.selectAll(".card-body").append("p").html("<strong>" + key + ": " + "</strong>" + value);
+  //   });
+  // }
+  d3.selectAll(".card-body")
+        .append("p").html("<strong>" + "School Name: " + "</strong>" + filteredsatscores.School_Name)
+        .append("p").html("<strong>" + "School Type: " + "</strong>" + filteredsatscores.School_Type.toLowerCase())
+        .append("p").html("<strong>" + "Address: " + "</strong>" + filteredsatscores.Address)
+        .append("p").html("<strong>" + "City: " + "</strong>" + filteredsatscores.City)
+        .append("p").html("<strong>" + "County: " + "</strong>" + filteredsatscores.County)
+        .append("p").html("<strong>" + "ZIP: " + "</strong>" + filteredsatscores.Zip)
+        .append("p").html("<strong>" + "Per Pupil Expeditures (total): " + "</strong>" + filteredsatscores.Total_Per_Pupil_Expenditures_Subtotal)
+        .append("p").html("<strong>" + "SAT Math Score (avg): " + "</strong>" + filteredsatscores.SAT_Math_Average)
+        .append("p").html("<strong>" + "SAT Reading Score (avg): " + "</strong>" + filteredsatscores.SAT_Reading_Average)
+    // console.log("filtereddata", filteredsatscores)
+      // });
+    }
 
   function init() {
     metadata("Evanston Twp High School")
