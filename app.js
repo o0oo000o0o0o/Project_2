@@ -25,6 +25,11 @@
 //   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 // Store our API endpoint inside queryUrl
+var myMap = L.map("map-id", {
+  center: [45.52, -122.67],
+  zoom: 13
+});
+
 var queryUrl = "http://localhost:5000/";
 
 // Perform a GET request to the query URL
@@ -49,37 +54,34 @@ d3.json(queryUrl).then(function(data) {
   
   function getdata(choice) {
     var filteredDataset = data.filter(d => d.School_Name == choice);
-    // console.log(`We are plotting data: ${filteredDataset[0]}`);
-
-    var test = ["Sat Math Average"];
-    var testScores = []
-    
+    var test1 = ["Sat Math Average"];
+    var test2 = ["Sat Reading Average"];
     var satmath = filteredDataset.map(d=> d.SAT_Math_Average)
     var satreading = filteredDataset.map(d=> d.SAT_Reading_Average)
-
     //Bar Start
     var trace1 ={
-        x:satmath.reverse(),
-        y:test.reverse(),
+        x:satmath,
+        y:test1,
         type: "bar",
-        orientation: "h"
+        orientation: "h",
+        name: "SAT MATH"
     }
-
     var trace2 ={
-      x:satreading.reverse(),
-      y:test.reverse(),
+      x:satreading,
+      y:test2,
       type: "bar",
-      orientation: "h"
+      orientation: "h",
+      name: "SAT READING"
     }
     var barData = [trace1, trace2];
     var barLayout = {
         title: "SAT Scores",
         xaxis: {title: "Subject"},
         yaxis: {title: "Score Range"},
-        height: 800,
-        width: 1150,
+        height: 400,
+        width: 900,
         margin: {
-            l: 100,
+            l: 150,
             r: 50,
             t: 50,
             b: 150
@@ -93,14 +95,27 @@ d3.json(queryUrl).then(function(data) {
   function metadata(choice) {
     var satscores= data
     // remove all info in demographic panel if exists
-    d3.selectAll(".panel-body > h5").remove()
-    // filter metadata according to chosen id
-    var filteredsatscores= satscores.filter(d => d.School_Name === choice)[0]
-    // get key-value pairs and add them to the demographic info panel
-    Object.entries(filteredsatscores).forEach(function([key, value]) {
-        d3.selectAll(".panel-body").append("h5").html("<strong>" + key + ": " + value + "<strong>");
-    });
-  }
+  d3.selectAll(".card-body > p").remove()
+  //   // filter metadata according to chosen id
+  var filteredsatscores= satscores.filter(d => d.School_Name === choice)[0]
+  //   // get key-value pairs and add them to the demographic info panel
+  // Object.entries(filteredsatscores).forEach(function([key, value]) {
+  //       d3.selectAll(".card-body").append("p").html("<strong>" + key + ": " + "</strong>" + value);
+  //   });
+  // }
+  d3.selectAll(".card-body")
+        .append("p").html("<strong>" + "School Name: " + "</strong>" + filteredsatscores.School_Name)
+        .append("p").html("<strong>" + "School Type: " + "</strong>" + filteredsatscores.School_Type.toLowerCase())
+        .append("p").html("<strong>" + "Address: " + "</strong>" + filteredsatscores.Address)
+        .append("p").html("<strong>" + "City: " + "</strong>" + filteredsatscores.City)
+        .append("p").html("<strong>" + "County: " + "</strong>" + filteredsatscores.County)
+        .append("p").html("<strong>" + "ZIP: " + "</strong>" + filteredsatscores.Zip)
+        .append("p").html("<strong>" + "Per Pupil Expeditures (total): " + "</strong>" + filteredsatscores.Total_Per_Pupil_Expenditures_Subtotal)
+        .append("p").html("<strong>" + "SAT Math Score (avg): " + "</strong>" + filteredsatscores.SAT_Math_Average)
+        .append("p").html("<strong>" + "SAT Reading Score (avg): " + "</strong>" + filteredsatscores.SAT_Reading_Average)
+    // console.log("filtereddata", filteredsatscores)
+      // });
+    }
 
   function init() {
     metadata("Evanston Twp High School")
