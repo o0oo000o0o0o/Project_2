@@ -25,6 +25,11 @@
 //   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 // Store our API endpoint inside queryUrl
+var myMap = L.map("map-id", {
+  center: [45.52, -122.67],
+  zoom: 13
+});
+
 var queryUrl = "http://localhost:5000/";
 
 // Perform a GET request to the query URL
@@ -76,16 +81,17 @@ d3.json(queryUrl).then(function(data) {
         title: "SAT Scores",
         xaxis: {title: "Subject"},
         yaxis: {title: "Score Range"},
-        height: 800,
-        width: 1150,
+        height: 400,
+        width: 700,
         margin: {
-            l: 100,
+            l: 200,
             r: 50,
             t: 50,
             b: 150
         }
     }
     Plotly.newPlot("bar", barData, barLayout);
+
     //Bar End
 }
   
@@ -93,12 +99,12 @@ d3.json(queryUrl).then(function(data) {
   function metadata(choice) {
     var satscores= data
     // remove all info in demographic panel if exists
-    d3.selectAll(".panel-body > h5").remove()
+    d3.selectAll(".card-body > p").remove()
     // filter metadata according to chosen id
     var filteredsatscores= satscores.filter(d => d.School_Name === choice)[0]
     // get key-value pairs and add them to the demographic info panel
     Object.entries(filteredsatscores).forEach(function([key, value]) {
-        d3.selectAll(".panel-body").append("h5").html("<strong>" + key + ": " + value + "<strong>");
+        d3.selectAll(".card-body").append("p").html("<strong>" + key + ": " + "</strong>" + value);
     });
   }
 
