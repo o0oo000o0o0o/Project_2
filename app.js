@@ -54,27 +54,24 @@ d3.json(queryUrl).then(function(data) {
   
   function getdata(choice) {
     var filteredDataset = data.filter(d => d.School_Name == choice);
-    // console.log(`We are plotting data: ${filteredDataset[0]}`);
-
-    var test = ["Sat Math Average"];
-    var testScores = []
-    
+    var test1 = ["Sat Math Average"];
+    var test2 = ["Sat Reading Average"];
     var satmath = filteredDataset.map(d=> d.SAT_Math_Average)
     var satreading = filteredDataset.map(d=> d.SAT_Reading_Average)
-
     //Bar Start
     var trace1 ={
-        x:satmath.reverse(),
-        y:test.reverse(),
+        x:satmath,
+        y:test1,
         type: "bar",
-        orientation: "h"
+        orientation: "h",
+        name: "SAT MATH"
     }
-
     var trace2 ={
-      x:satreading.reverse(),
-      y:test.reverse(),
+      x:satreading,
+      y:test2,
       type: "bar",
-      orientation: "h"
+      orientation: "h",
+      name: "SAT READING"
     }
     var barData = [trace1, trace2];
     var barLayout = {
@@ -82,16 +79,15 @@ d3.json(queryUrl).then(function(data) {
         xaxis: {title: "Subject"},
         yaxis: {title: "Score Range"},
         height: 400,
-        width: 700,
+        width: 900,
         margin: {
-            l: 200,
+            l: 150,
             r: 50,
             t: 50,
             b: 150
         }
     }
     Plotly.newPlot("bar", barData, barLayout);
-
     //Bar End
 }
   
