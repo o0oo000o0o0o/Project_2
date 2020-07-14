@@ -1,57 +1,50 @@
-// // GENERATE SVG
-// var svgWidth = 960;
-// var svgHeight = 700;
-
-// var margin = {
-//   top: 20,
-//   right: 40,
-//   bottom: 80,
-//   left: 100
-// };
-
-// var width = svgWidth - margin.left - margin.right;
-// var height = svgHeight - margin.top - margin.bottom;
-
-// // Create an SVG wrapper, append an SVG group that will hold our chart,
-// // and shift the latter by left and top margins.
-// var svg = d3
-//   .select("#scatter")
-//   .append("svg")
-//   .attr("width", svgWidth)
-//   .attr("height", svgHeight);
-
-// // Append an SVG group and shift by left and top margins.
-// var chartGroup = svg.append("g")
-//   .attr("transform", `translate(${margin.left}, ${margin.top})`);
-
 // Store our API endpoint inside queryUrl
-var myMap = L.map("map-id", {
-  center: [45.52, -122.67],
-  zoom: 13
-});
-
 var queryUrl = "http://localhost:5000/";
-
 // Perform a GET request to the query URL
 d3.json(queryUrl).then(function(data) {
   // Once we get a response, send the data
   console.log(data);
   var schname = data.map(d=>d.School_Name)
   console.log(schname)
-
   schname.forEach(function(d) {
     d3.selectAll("#selDataset").append("option").text(d)
   });
-
+  $(function() {
+    // choose target dropdown
+    var select = $('#selDataset');
+    select.html(select.find('option').sort(function(x, y) {
+      // to change to descending order switch "<" for ">"
+      return $(x).text() > $(y).text() ? 1 : -1;
+    }));
+    // select default item after sorting (first item)
+    $('select').get(0).selectedIndex = 0;
+  });
   d3.selectAll("#selDataset").on("change", something);
-
   function something () {
     var dropDown = d3.select("#selDataset");
     var selection = dropDown.property("value");
     getdata(selection);
     metadata(selection)
+    mapsomething(selection)
   }
-  
+  function mapsomething (choice) {
+    var filteredDataset = data.filter(d => d.School_Name == choice);
+    var lat = filteredDataset[0].coordinates[1];
+    var long = filteredDataset[0].coordinates[0];
+    console.log(lat);
+    console.log(long);
+    var myMap = L.map("map-id", {
+      center: [lat, long],
+      zoom: 13
+    });
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        maxZoom: 18,
+        id: 'mapbox/streets-v11',
+        tileSize: 512,
+        zoomOffset: -1,
+        accessToken: 'pk.eyJ1IjoiZW1tYXN6YyIsImEiOiJja2J2Z2NieGMwMWRpMnFtdnozdDc2eW1tIn0.p7H1a96QFcxA6W_sZpImiA'
+    }).addTo(myMap);
+  }
   function getdata(choice) {
     var filteredDataset = data.filter(d => d.School_Name == choice);
     var test1 = ["Sat Math Average"];
@@ -90,8 +83,6 @@ d3.json(queryUrl).then(function(data) {
     Plotly.newPlot("bar", barData, barLayout);
     //Bar End
 }
-  
-  
   function metadata(choice) {
     var satscores= data
     // remove all info in demographic panel if exists
@@ -116,12 +107,10 @@ d3.json(queryUrl).then(function(data) {
     // console.log("filtereddata", filteredsatscores)
       // });
     }
-
   function init() {
     metadata("Evanston Twp High School")
     getdata("Evanston Twp High School")
+    mapsomething("Evanston Twp High School")
   };
-
   init();
-
 });
