@@ -1,14 +1,20 @@
 // Store our API endpoint inside queryUrl
 var queryUrl = "http://localhost:5000/";
+
 // Perform a GET request to the query URL
 d3.json(queryUrl).then(function(data) {
+
   // Once we get a response, send the data
   console.log(data);
+  
+  // get school names and append to dropdown menu
   var schname = data.map(d=>d.School_Name)
   console.log(schname)
   schname.forEach(function(d) {
     d3.selectAll("#selDataset").append("option").text(d)
   });
+
+  // sort dropdown menu in ascending order
   $(function() {
     // choose target dropdown
     var select = $('#selDataset');
@@ -19,6 +25,8 @@ d3.json(queryUrl).then(function(data) {
     // select default item after sorting (first item)
     // $('select').get(0).selectedIndex = 0;
   });
+
+  // even for dropdown menu
   d3.selectAll("#selDataset").on("change", something);
   function something () {
     var dropDown = d3.select("#selDataset");
@@ -28,6 +36,7 @@ d3.json(queryUrl).then(function(data) {
     mapsomething(selection)
   }
   
+  // Function to map
   function mapsomething (choice) {
     // Get current lat long
     var filteredDataset = data.filter(d => d.School_Name == choice);
@@ -35,9 +44,10 @@ d3.json(queryUrl).then(function(data) {
     var long = filteredDataset[0].coordinates[0];
     console.log(lat);
     console.log(long);
-    // create tile
-    document.getElementById('map-id').innerHTML = "<div id='map' style='width: 100%; height: 100%;'></div>";
-    mapLayer= new L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', 
+
+    // create map div and tileLayer
+    var myMap= document.getElementById('map-id').innerHTML = "<div id='map' style='width: 100%; height: 100%;'></div>";
+    var mapLayer= L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', 
       {attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
       maxZoom: 18,
       id: 'mapbox/streets-v11',
@@ -57,14 +67,33 @@ d3.json(queryUrl).then(function(data) {
     });    
     var marker= L.marker([lat, long], {
       draggable: true,
-      icon: schoolIcon,   //comment this out if don't want to use customized icon
+      // icon: schoolIcon,   //comment this out if don't want to use customized icon
       title: filteredDataset[0].School_Name
     }).addTo(map);
+
     // bind popup with school info
-    marker.bindPopup("<strong>"+filteredDataset[0].School_Name + "</strong><hr> ZIP: " + filteredDataset[0].Zip
-                    + "<hr> Average Home value: " + filteredDataset[0].Avg_Home_Value)
+    marker.bindPopup("<strong>"+filteredDataset[0].School_Name + "</strong><hr> Per Pupil Expenditures: $" + filteredDataset[0].Total_Per_Pupil_Expenditures_Subtotal
+                    + "<hr> Average Home value: $" + filteredDataset[0].Avg_Home_Value)
+  
+    // Heatmap
+    var heatArray = [];
+    for (var i = 0; i < data.length; i++) {
+      var homeValue = data[i].Avg_Home_Value;
+
+      if (homeValue) {
+        // collect coordinates and home value to use for the heatmap
+        heatArray.push([data[i].coordinates[1],data[i].coordinates[0], data[i].Avg_Home_Value]);
+      }
+    }
+    console.log("heatmap", heatArray)
+    // add heatmap layer to map
+    var heat = L.heatLayer(heatArray, {
+      radius: 60,
+      blur: 65
+    }).addTo(map);
   }
 
+  // Function to generate bargraph
   function getdata(choice) {
     var filteredDataset = data.filter(d => d.School_Name == choice);
     var test1 = ["Math"];
@@ -73,24 +102,26 @@ d3.json(queryUrl).then(function(data) {
     var satreading = filteredDataset.map(d=> d.SAT_Reading_Average)
     //Bar Start
     var trace1 ={
-        x:satmath,
-        y:test1,
-        type: "bar",
-        orientation: "h",
-        name: "SAT Math Average"
+      x:["Math", "Reading"],
+      y:[parseInt(satmath), parseInt(satreading)],
+      type: "bar",
+      // orientation: "h",
+      name: "School SAT Scores"
     }
     var trace2 ={
-      x:satreading,
-      y:test2,
+      x:["Math", "Reading"],
+      y:[497,497.5],
       type: "bar",
-      orientation: "h",
-      name: "SAT Reading Average"
+      // orientation: "h",
+      name: "State Average SAT Scores"
     }
+
     var barData = [trace1, trace2];
     var barLayout = {
-      title: "Average SAT Scores for Selected School",
-      xaxis: {title: "Score Range"},
-      yaxis: {title: "Subject"},
+      barmode: 'group',
+      title: "SAT Scores for Selected School compared to State Average",
+      xaxis: {title: "SAT"},
+      yaxis: {title: "Average Score"},
       height: 400,
       width: 900,
       margin: {
@@ -102,33 +133,33 @@ d3.json(queryUrl).then(function(data) {
     }
     Plotly.newPlot("bar", barData, barLayout);
     //Bar End
-}
+  }
+
+  // Function to generate demographic panel
   function metadata(choice) {
     var satscores= data
     // remove all info in demographic panel if exists
-  d3.selectAll(".card-body > p").remove()
-  //   // filter metadata according to chosen id
-  var filteredsatscores= satscores.filter(d => d.School_Name === choice)[0]
-  //   // get key-value pairs and add them to the demographic info panel
-  // Object.entries(filteredsatscores).forEach(function([key, value]) {
-  //       d3.selectAll(".card-body").append("p").html("<strong>" + key + ": " + "</strong>" + value);
-  //   });
-  // }
-  d3.selectAll(".card-body")
-  .append("p").html("<strong>" + "School Name: " + "</strong>" + filteredsatscores.School_Name)
-  .append("p").html("<strong>" + "School Type: " + "</strong>" + filteredsatscores.School_Type.toLowerCase())
-  .append("p").html("<strong>" + "Address: " + "</strong>" + filteredsatscores.Address)
-  .append("p").html("<strong>" + "City: " + "</strong>" + filteredsatscores.City)
-  .append("p").html("<strong>" + "County: " + "</strong>" + filteredsatscores.County)
-  .append("p").html("<strong>" + "ZIP: " + "</strong>" + filteredsatscores.Zip)
-  .append("p").html("<strong>" + "Avg. Median Home Value (by zip): " + "</strong>" + "$" + filteredsatscores.Avg_Home_Value)
-  .append("p").html("<strong>" + "Per Pupil Expenditures (total): " + "</strong>" + "$" + filteredsatscores.Total_Per_Pupil_Expenditures_Subtotal)
-  .append("p").html("<strong>" + "SAT Math Score (avg): " + "</strong>" + filteredsatscores.SAT_Math_Average)
-  .append("p").html("<strong>" + "SAT Reading Score (avg): " + "</strong>" + filteredsatscores.SAT_Reading_Average)
-  // console.log("filtereddata", filteredsatscores)
-  // });
+    d3.selectAll(".card-body > p").remove()
+    // filter metadata according to chosen id
+    var filteredsatscores= satscores.filter(d => d.School_Name === choice)[0]
+
+    //   // get values and add them to the demographic info panel
+    d3.selectAll(".card-body")
+    .append("p").html("<strong>" + "School Name: " + "</strong>" + filteredsatscores.School_Name)
+    .append("p").html("<strong>" + "School Type: " + "</strong>" + filteredsatscores.School_Type.toLowerCase())
+    .append("p").html("<strong>" + "Address: " + "</strong>" + filteredsatscores.Address)
+    .append("p").html("<strong>" + "City: " + "</strong>" + filteredsatscores.City)
+    .append("p").html("<strong>" + "County: " + "</strong>" + filteredsatscores.County)
+    .append("p").html("<strong>" + "ZIP: " + "</strong>" + filteredsatscores.Zip)
+    .append("p").html("<strong>" + "Avg. Median Home Value (by zip): " + "</strong>" + "$" + filteredsatscores.Avg_Home_Value)
+    .append("p").html("<strong>" + "Per Pupil Expenditures (total): " + "</strong>" + "$" + filteredsatscores.Total_Per_Pupil_Expenditures_Subtotal)
+    .append("p").html("<strong>" + "SAT Math Score (avg): " + "</strong>" + filteredsatscores.SAT_Math_Average)
+    .append("p").html("<strong>" + "SAT Reading Score (avg): " + "</strong>" + filteredsatscores.SAT_Reading_Average)
+    // console.log("filtereddata", filteredsatscores)
+    // });
   }
 
+  // Function to initialize
   function init() {
     metadata("Evanston Twp High School")
     getdata("Evanston Twp High School")
