@@ -49,14 +49,15 @@
               </div>
 
 <!-- ****ROW 2 SEARCH FORM**** -->
-          <form class="needs-validation" novalidate>
+          <form autocomplete="off" class="needs-validation" novalidate>
             <div class="form-row">
               <div class="col-md-12">
                 <label id="search-box-text" for="validationCustom01">OR ENTER YOUR SCHOOL NAME BELOW:</label>
-                <input type="text" class="form-control autocomplete" id="school-input" placeholder="School Name" value="">
+                <input type="text" class="form-control autocomplete" id="school-input" placeholder="School Name">
                 <div class="valid-feedback">
                   Looks good!
                 </div>
+                <button id="submit" type="submit" class="btn btn-default">Plot School</button>
               </div>
             </div>
           </form>
@@ -73,21 +74,21 @@
         </div>
        </div>
     </div>
+    
 <!-- ****ROW 3 - SCHOOL DATA & BAR CHARTS**** -->
       <div class="row">
-          <div class="col-md-4">
-            <div class="card text-white bg-primary">
-              <div class="card-header">School Data</div>
-              <div class="card-body">
-                <h5 class="card-title"></h5>
-                <p class="card-text"></p>
-              </div>
+        <div class="col-md-4">
+          <div class="card text-white bg-primary border-dark">
+            <div class="card-header">School Data</div>
+            <div class="card-body">
+              <h5 class="card-title"></h5>
+              <p class="card-text"></p>
             </div>
           </div>
-
-          <div class="col-md-7">
-            <div id="bar"></div>
-          </div>
+        </div>
+        <div class="col-md-7">
+          <div id="bar"></div>
+        </div>
       </div>
       
  <!-- ***ROW 5 - SCATTER PLOT -->

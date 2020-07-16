@@ -86,15 +86,15 @@ d3.json(queryUrl).then(function(data) {
         .attr("opacity", ".5");
     
     
-    
+
     // ToolTip
     var toolTip= d3.tip()
     .attr("class", "tooltip")
     // .offset([80, -60])
     .html(function(data) {
-        return ("<strong>"+ data.School_Name + "</strong><hr> Avg Home Value: " 
+        return ("<strong>"+ data.School_Name + "</strong><hr> Avg Home Value: " + "$"
         + data.Avg_Home_Value + 
-        "<hr>PP Expenditures: " + data.Total_Per_Pupil_Expenditures_Subtotal)
+        "<hr>PP Expenditures: " + "$" + data.Total_Per_Pupil_Expenditures_Subtotal)
     })
 
     chartGroup.call(toolTip)
